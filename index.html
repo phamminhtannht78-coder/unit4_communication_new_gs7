@@ -1,0 +1,1633 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Unit 4 – Communication: Expressing Preferences &amp; Music and Arts in School</title>
+  <style>
+    /* =========================================================================
+       BIẾN GIAO DIỆN & PHONG CÁCH XANH LÁ - VÀNG TƯƠI SÁNG (CỠ CHỮ 18PX GỌN GÀNG)
+       ========================================================================= */
+    :root {
+      --bg-green-soft: #dcfce7;
+      --bg-green-mid: #bbf7d0;
+      --bg-yellow-soft: #fef9c3;
+      --bg-yellow-warm: #fef08a;
+      --ink-main: #0f291e;
+      --ink-muted: #2d4a3e;
+      --surface: #ffffff;
+      --surface-alt: #f7fee7;
+      --leaf: #15803d;
+      --leaf-bright: #16a34a;
+      --leaf-dark: #14532d;
+      --sun: #eab308;
+      --sun-deep: #ca8a04;
+      --lime: #65a30d;
+      --sky: #0284c7;
+      --sky-dark: #0369a1;
+      --danger: #dc2626;
+      --danger-soft: #fee2e2;
+      --radius-lg: 20px;
+      --radius-md: 15px;
+      --radius-sm: 12px;
+      --shadow-card: 0 8px 20px rgba(20, 83, 45, 0.12);
+      --shadow-btn: 0 4px 0 rgba(20, 83, 45, 0.22);
+    }
+
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      font-size: 16px;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", Roboto, system-ui, -apple-system, Arial, sans-serif;
+      font-size: 18px;
+      line-height: 1.4;
+      color: var(--ink-main);
+      background:
+        radial-gradient(circle at 12% 10%, rgba(250, 204, 21, 0.45) 0%, transparent 30%),
+        radial-gradient(circle at 88% 14%, rgba(74, 222, 128, 0.45) 0%, transparent 32%),
+        radial-gradient(circle at 78% 88%, rgba(253, 224, 71, 0.42) 0%, transparent 34%),
+        linear-gradient(145deg, var(--bg-yellow-soft) 0%, var(--bg-green-soft) 52%, var(--bg-green-mid) 100%);
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Canvas pháo hoa trên toàn màn hình */
+    #fireworksCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 950;
+    }
+
+    /* Thẻ nổi đi theo ngón tay hoặc con trỏ chuột khi kéo thả */
+    #dragGhost {
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 1200;
+      pointer-events: none;
+      transform: translate(-50%, -50%) scale(1.05) rotate(-2deg);
+      background: linear-gradient(180deg, #fef08a 0%, #fde047 100%);
+      border: 3px solid var(--leaf-dark);
+      color: var(--ink-main);
+      border-radius: var(--radius-sm);
+      padding: 8px 16px;
+      font-size: 18px;
+      font-weight: 900;
+      box-shadow: 0 12px 26px rgba(20, 83, 45, 0.25);
+      display: none;
+      white-space: nowrap;
+    }
+
+    /* =========================================================================
+       THANH ĐIỀU KHIỂN ĐẦU TRANG
+       ========================================================================= */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 3px solid var(--leaf-bright);
+      padding: 10px 18px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      box-shadow: 0 4px 14px rgba(20, 83, 45, 0.09);
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: clamp(20px, 2vw, 26px);
+      font-weight: 900;
+      color: var(--leaf-dark);
+      line-height: 1.2;
+    }
+
+    .brand-sub {
+      margin-top: 2px;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--ink-muted);
+    }
+
+    .top-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn {
+      border: 2.5px solid transparent;
+      border-radius: var(--radius-sm);
+      padding: 9px 16px;
+      min-height: 44px;
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.2;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: var(--shadow-btn);
+      transition: transform 0.14s ease, filter 0.14s ease, background-color 0.14s ease;
+    }
+
+    .btn:hover {
+      filter: brightness(1.03);
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 rgba(20, 83, 45, 0.22);
+    }
+
+    .btn-start {
+      background: linear-gradient(180deg, #22c55e 0%, var(--leaf) 100%);
+      border-color: var(--leaf-dark);
+      color: #ffffff;
+    }
+
+    .btn-music {
+      background: linear-gradient(180deg, #fef08a 0%, var(--sun) 100%);
+      border-color: var(--sun-deep);
+      color: var(--ink-main);
+    }
+
+    .btn-music.active {
+      background: linear-gradient(180deg, #84cc16 0%, var(--lime) 100%);
+      border-color: var(--leaf-dark);
+      color: #ffffff;
+    }
+
+    .btn-reset {
+      background: linear-gradient(180deg, #fde047 0%, #facc15 100%);
+      border-color: var(--sun-deep);
+      color: var(--ink-main);
+    }
+
+    .btn-listen {
+      background: linear-gradient(180deg, #38bdf8 0%, var(--sky) 100%);
+      border-color: var(--sky-dark);
+      color: #ffffff;
+      padding: 7px 14px;
+      min-height: 42px;
+      font-size: 18px;
+      border-radius: var(--radius-sm);
+      box-shadow: 0 3px 0 rgba(3, 105, 161, 0.28);
+    }
+
+    /* =========================================================================
+       VÙNG NỘI DUNG CHÍNH & ĐIỀU HƯỚNG TAB
+       ========================================================================= */
+    .main-wrap {
+      flex: 1;
+      width: 100%;
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 12px 18px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .tab-bar {
+      background: rgba(255, 255, 255, 0.95);
+      border: 2.5px solid var(--leaf-bright);
+      border-radius: var(--radius-lg);
+      padding: 10px 14px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .tab-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .tab-btn {
+      border: 2.5px solid var(--leaf);
+      background: var(--bg-yellow-soft);
+      color: var(--ink-main);
+      border-radius: var(--radius-sm);
+      padding: 9px 15px;
+      min-height: 46px;
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 3px 0 rgba(20, 83, 45, 0.16);
+      transition: transform 0.14s ease, background-color 0.14s ease, color 0.14s ease;
+    }
+
+    .tab-btn:hover {
+      transform: translateY(-1px);
+      background: var(--bg-yellow-warm);
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(180deg, var(--leaf-bright) 0%, var(--leaf) 100%);
+      border-color: var(--leaf-dark);
+      color: #ffffff;
+    }
+
+    .score-badge {
+      background: linear-gradient(180deg, #fef08a 0%, #fde047 100%);
+      border: 2.5px solid var(--sun-deep);
+      color: var(--ink-main);
+      border-radius: 999px;
+      padding: 8px 18px;
+      font-size: 18px;
+      font-weight: 900;
+      box-shadow: 0 3px 0 rgba(202, 138, 4, 0.25);
+      white-space: nowrap;
+    }
+
+    .status-banner {
+      background: var(--surface);
+      border: 2.5px solid var(--leaf);
+      border-left: 10px solid var(--leaf-bright);
+      border-radius: var(--radius-md);
+      padding: 11px 16px;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--ink-main);
+      box-shadow: var(--shadow-card);
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+    }
+
+    .status-banner.success {
+      background: #f0fdf4;
+      border-color: var(--leaf-bright);
+      border-left-color: var(--leaf-bright);
+      color: var(--leaf-dark);
+    }
+
+    .status-banner.error {
+      background: #fef2f2;
+      border-color: var(--danger);
+      border-left-color: var(--danger);
+      color: #7f1d1d;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* =========================================================================
+       THẺ BÀI TẬP & KHAY KÉO THẢ / CHẠM CHỌN
+       ========================================================================= */
+    .card {
+      background: rgba(255, 255, 255, 0.96);
+      border: 2.5px solid var(--leaf-bright);
+      border-radius: var(--radius-lg);
+      padding: 16px 18px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .card-heading {
+      margin: 0;
+      font-size: clamp(20px, 1.8vw, 24px);
+      font-weight: 900;
+      color: var(--leaf-dark);
+      line-height: 1.25;
+    }
+
+    .guide-text {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--ink-muted);
+    }
+
+    .chip-tray {
+      background: linear-gradient(180deg, var(--bg-yellow-soft) 0%, var(--bg-green-soft) 100%);
+      border: 2.5px dashed var(--leaf);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .draggable-chip {
+      background: linear-gradient(180deg, #ffffff 0%, #fef9c3 100%);
+      border: 2.5px solid var(--leaf);
+      color: var(--ink-main);
+      border-radius: var(--radius-sm);
+      padding: 8px 15px;
+      min-height: 44px;
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.2;
+      cursor: grab;
+      touch-action: none;
+      box-shadow: 0 3px 0 rgba(21, 128, 61, 0.22);
+      transition: transform 0.14s ease, background-color 0.14s ease, border-color 0.14s ease;
+    }
+
+    .draggable-chip:hover {
+      transform: translateY(-2px);
+      background: #fef08a;
+    }
+
+    .draggable-chip.selected {
+      background: #fde047;
+      border-color: var(--sun-deep);
+      box-shadow: 0 0 0 4px rgba(234, 179, 8, 0.35), 0 3px 0 rgba(202, 138, 4, 0.28);
+    }
+
+    .draggable-chip.dragging-hidden {
+      opacity: 0.35;
+    }
+
+    .drop-target {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 155px;
+      min-height: 42px;
+      padding: 4px 12px;
+      margin: 0 4px;
+      border-radius: var(--radius-sm);
+      border: 2.5px dashed var(--leaf);
+      background: #fef9c3;
+      color: var(--ink-muted);
+      font-size: 18px;
+      font-weight: 800;
+      vertical-align: middle;
+      cursor: pointer;
+      transition: transform 0.14s ease, background-color 0.14s ease, border-color 0.14s ease;
+    }
+
+    .drop-target.hover-over {
+      transform: scale(1.03);
+      border-style: solid;
+      border-color: var(--sky-dark);
+      background: #e0f2fe;
+      color: var(--ink-main);
+      box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.25);
+    }
+
+    .drop-target.filled-ok {
+      border-style: solid;
+      border-color: var(--leaf-bright);
+      background: #dcfce7;
+      color: var(--leaf-dark);
+      cursor: default;
+    }
+
+    .drop-target.shake-err {
+      animation: errShake 0.4s ease;
+      border-style: solid;
+      border-color: var(--danger);
+      background: var(--danger-soft);
+      color: #7f1d1d;
+    }
+
+    @keyframes errShake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-7px); }
+      50% { transform: translateX(7px); }
+      75% { transform: translateX(-4px); }
+    }
+
+    /* =========================================================================
+       HỘI THOẠI NICK & NAM + TASK 2
+       ========================================================================= */
+    .dialogue-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .dialogue-row {
+      background: var(--surface-alt);
+      border: 2px solid #a3e635;
+      border-radius: var(--radius-md);
+      padding: 11px 14px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .dialogue-line {
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.55;
+      flex: 1;
+      min-width: 240px;
+    }
+
+    .hl-word {
+      background: #fef08a;
+      padding: 2px 7px;
+      border-radius: 7px;
+      color: var(--ink-main);
+    }
+
+    .pair-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 12px;
+    }
+
+    .pair-box {
+      background: #f0fdf4;
+      border: 2.5px solid var(--leaf);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .pair-topic {
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--leaf-dark);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .pair-sentence {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.55;
+    }
+
+    /* =========================================================================
+       TAB 2: QUIZ TRẮC NGHIỆM (TASK 3)
+       ========================================================================= */
+    .quiz-card {
+      background: rgba(255, 255, 255, 0.96);
+      border: 2.5px solid var(--leaf-bright);
+      border-radius: var(--radius-lg);
+      padding: 16px 18px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .quiz-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .quiz-question {
+      font-size: 18px;
+      font-weight: 900;
+      line-height: 1.4;
+      flex: 1;
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .quiz-opt-btn {
+      width: 100%;
+      border: 2.5px solid var(--leaf);
+      background: #fef9c3;
+      color: var(--ink-main);
+      border-radius: var(--radius-sm);
+      padding: 10px 16px;
+      min-height: 48px;
+      font-size: 18px;
+      font-weight: 800;
+      text-align: left;
+      cursor: pointer;
+      box-shadow: 0 3px 0 rgba(20, 83, 45, 0.16);
+      transition: transform 0.14s ease, background-color 0.14s ease;
+    }
+
+    .quiz-opt-btn:hover {
+      transform: translateY(-1px);
+      background: #fef08a;
+    }
+
+    .quiz-opt-btn.correct-pick {
+      background: #dcfce7;
+      border-color: var(--leaf-bright);
+      color: var(--leaf-dark);
+    }
+
+    .quiz-opt-btn.wrong-pick {
+      background: var(--danger-soft);
+      border-color: var(--danger);
+      color: #7f1d1d;
+    }
+
+    .explain-box {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--leaf-dark);
+      background: #f0fdf4;
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      border-left: 5px solid var(--leaf-bright);
+    }
+
+    /* =========================================================================
+       TAB 3: ĐOẠN VĂN CỦA SUSIE & SO SÁNH TRƯỜNG HỌC (TASK 4 & TASK 5)
+       ========================================================================= */
+    .susie-passage {
+      background: #fefce8;
+      border: 2.5px solid var(--sun-deep);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.55;
+    }
+
+    .collected-tray {
+      background: #f0fdf4;
+      border: 2.5px solid var(--leaf-bright);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      min-height: 64px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .collected-tray.hover-over {
+      background: #e0f2fe;
+      border-color: var(--sky-dark);
+      box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.25);
+    }
+
+    .found-tag {
+      background: var(--leaf-bright);
+      color: #ffffff;
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .compare-row {
+      background: var(--surface-alt);
+      border: 2px solid #a3e635;
+      border-radius: var(--radius-md);
+      padding: 11px 14px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .compare-text {
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.55;
+      flex: 1;
+      min-width: 240px;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="fireworksCanvas"></canvas>
+  <div id="dragGhost" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div>
+      <h1 class="brand-title">Unit 4 – Music and Arts: Communication</h1>
+      <div class="brand-sub">Tiếng Anh 7 • Trang 45: Expressing preferences &amp; Music and arts in school</div>
+    </div>
+    <div class="top-actions">
+      <button id="btnStart" class="btn btn-start" type="button">Bắt đầu</button>
+      <button id="btnMusic" class="btn btn-music active" type="button" aria-pressed="true">Nhạc nền: Bật</button>
+      <button id="btnReset" class="btn btn-reset" type="button">Đặt lại / Chơi lại</button>
+    </div>
+  </header>
+
+  <main class="main-wrap">
+    <nav class="tab-bar" aria-label="Chọn hoạt động tương tác">
+      <div class="tab-buttons" role="tablist">
+        <button id="tabBtn1" class="tab-btn active" type="button" role="tab" aria-selected="true" data-tab="tab1">
+          1. Expressing preferences (Task 1 &amp; 2)
+        </button>
+        <button id="tabBtn2" class="tab-btn" type="button" role="tab" aria-selected="false" data-tab="tab2">
+          2. Quiz: What do you know? (Task 3)
+        </button>
+        <button id="tabBtn3" class="tab-btn" type="button" role="tab" aria-selected="false" data-tab="tab3">
+          3. Susie's School &amp; Compare (Task 4 &amp; 5)
+        </button>
+      </div>
+      <div id="scoreDisplay" class="score-badge">Điểm: 0</div>
+    </nav>
+
+    <div id="statusBanner" class="status-banner" role="status" aria-live="polite">
+      Bấm "Bắt đầu", kéo thả hoặc chạm chọn thẻ đáp án và bấm "Nghe" để luyện nghe tiếng Anh!
+    </div>
+
+    <!-- =====================================================================
+         TAB 1: EXPRESSING PREFERENCES (TASK 1 & TASK 2)
+         ===================================================================== -->
+    <section id="tab1" class="tab-panel active" role="tabpanel" aria-labelledby="tabBtn1">
+      <div class="card">
+        <h2 class="card-heading">Task 1 – Hội thoại của Nick &amp; Nam (Expressing preferences)</h2>
+        <p class="guide-text">
+          Kéo thả hoặc chạm chọn thẻ <strong>prefer</strong> / <strong>like ... better</strong> vào chỗ trống và bấm <strong>Nghe</strong> từng dòng.
+        </p>
+
+        <div id="trayTask1" class="chip-tray" aria-label="Kho thẻ mẫu câu Task 1"></div>
+
+        <div class="dialogue-list">
+          <div class="dialogue-row">
+            <div class="dialogue-line">
+              Nick: Which do you <span class="hl-word">prefer</span>, pop or folk music?
+            </div>
+            <button class="btn btn-listen" type="button" data-speak="Which do you prefer, pop or folk music?">
+              Nghe
+            </button>
+          </div>
+
+          <div class="dialogue-row">
+            <div class="dialogue-line">
+              Nam: I
+              <span class="drop-target" data-slot-id="t1_s1" data-answer="prefer" role="button" tabindex="0">Thả vào đây</span>
+              folk music. It has a better beat.
+            </div>
+            <button class="btn btn-listen" type="button" data-speak="I prefer folk music. It has a better beat.">
+              Nghe
+            </button>
+          </div>
+
+          <div class="dialogue-row">
+            <div class="dialogue-line">
+              Nick: And which do you <span class="hl-word">like better</span>, modern art or folk art?
+            </div>
+            <button class="btn btn-listen" type="button" data-speak="And which do you like better, modern art or folk art?">
+              Nghe
+            </button>
+          </div>
+
+          <div class="dialogue-row">
+            <div class="dialogue-line">
+              Nam: I
+              <span class="drop-target" data-slot-id="t1_s2" data-answer="like ... better" role="button" tabindex="0">Thả vào đây</span>.
+            </div>
+            <button class="btn btn-listen" type="button" data-speak="I like modern art better.">
+              Nghe
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="card-heading">Task 2 – Hỏi và đáp về sở thích (Ask and answer about preferences)</h2>
+        <p class="guide-text">
+          Kéo thả hoặc chạm chọn mẫu câu hỏi/đáp phù hợp với hai cặp chủ đề trong sách trang 45.
+        </p>
+
+        <div id="trayTask2" class="chip-tray" aria-label="Kho thẻ mẫu câu Task 2"></div>
+
+        <div class="pair-cards-grid">
+          <div class="pair-box">
+            <div class="pair-topic">
+              <span>Chủ đề 1: painting and taking photos</span>
+              <button class="btn btn-listen" type="button" data-speak="Which do you prefer, painting or taking photos? I prefer painting.">
+                Nghe
+              </button>
+            </div>
+            <div class="pair-sentence">
+              A: Which do you <span class="hl-word">prefer</span>, painting or taking photos?
+            </div>
+            <div class="pair-sentence">
+              B:
+              <span class="drop-target" data-slot-id="t2_s1" data-answer="I prefer painting." role="button" tabindex="0">Thả câu trả lời vào đây</span>
+            </div>
+          </div>
+
+          <div class="pair-box">
+            <div class="pair-topic">
+              <span>Chủ đề 2: singing and dancing</span>
+              <button class="btn btn-listen" type="button" data-speak="Which do you like better, singing or dancing? I like dancing better.">
+                Nghe
+              </button>
+            </div>
+            <div class="pair-sentence">
+              A: Which do you <span class="hl-word">like better</span>, singing or dancing?
+            </div>
+            <div class="pair-sentence">
+              B:
+              <span class="drop-target" data-slot-id="t2_s2" data-answer="I like dancing better." role="button" tabindex="0">Thả câu trả lời vào đây</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         TAB 2: QUIZ WHAT DO YOU KNOW? (TASK 3 - 4 CÂU TRẮC NGHIỆM)
+         ===================================================================== -->
+    <section id="tab2" class="tab-panel" role="tabpanel" aria-labelledby="tabBtn2">
+      <div id="quizContainer" class="quiz-options"></div>
+    </section>
+
+    <!-- =====================================================================
+         TAB 3: SUSIE'S SCHOOL & COMPARE (TASK 4 & TASK 5)
+         ===================================================================== -->
+    <section id="tab3" class="tab-panel" role="tabpanel" aria-labelledby="tabBtn3">
+      <div class="card">
+        <div class="quiz-top">
+          <h2 class="card-heading">Task 4 – Đoạn văn của Susie &amp; từ vựng Music and Arts</h2>
+          <button
+            class="btn btn-listen"
+            type="button"
+            data-speak="Hi. My name is Susie. I'm from Australia. I'm in grade 7. My school teaches arts and music to all the students. Some forms of art such as painting or drama are optional; you can choose to learn them if you like. Music and dancing are compulsory; all of us must study them every week. The school even has a choir, and they perform every month. There are also different art clubs, and you can join any of them."
+          >
+            Nghe đoạn văn
+          </button>
+        </div>
+
+        <div class="susie-passage">
+          "Hi. My name is Susie. I'm from Australia. I'm in grade 7. My school teaches arts and music to all the students. Some forms of art such as painting or drama are optional; you can choose to learn them if you like. Music and dancing are compulsory; all of us must study them every week. The school even has a choir, and they perform every month. There are also different art clubs, and you can join any of them."
+        </div>
+
+        <p class="guide-text">
+          Kéo thả hoặc chạm chọn các từ/cụm từ liên quan đến nghệ thuật và âm nhạc trong đoạn văn vào khay bên dưới:
+        </p>
+
+        <div id="trayTask4" class="chip-tray" aria-label="Từ vựng nghệ thuật và âm nhạc của Susie"></div>
+
+        <div id="collectedTrayTask4" class="collected-tray" role="button" tabindex="0" aria-label="Khay thu thập từ vựng liên quan đến nghệ thuật và âm nhạc">
+          <span id="collectedPlaceholder" class="guide-text">Thả hoặc chạm chọn từ/cụm từ liên quan đến arts &amp; music vào đây...</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="card-heading">Task 5 – So sánh trường của Susie với trường mình</h2>
+        <p class="guide-text">
+          Kéo thả hoặc chạm chọn cụm từ so sánh <strong>like</strong>, <strong>as ... as</strong>, hoặc <strong>different from</strong> để hoàn thành câu so sánh.
+        </p>
+
+        <div id="trayTask5" class="chip-tray" aria-label="Kho thẻ so sánh Task 5"></div>
+
+        <div class="dialogue-list">
+          <div class="compare-row">
+            <div class="compare-text">
+              1. My school is
+              <span class="drop-target" data-slot-id="t5_s1" data-answer="like" role="button" tabindex="0">Thả vào đây</span>
+              Susie's school because we learn music and art every week.
+            </div>
+            <button class="btn btn-listen" type="button" data-speak="My school is like Susie's school because we learn music and art every week.">
+              Nghe
+            </button>
+          </div>
+
+          <div class="compare-row">
+            <div class="compare-text">
+              2. Our school's art club is not
+              <span class="drop-target" data-slot-id="t5_s2" data-answer="as big as" role="button" tabindex="0">Thả vào đây</span>
+              Susie's school club.
+            </div>
+            <button class="btn btn-listen" type="button" data-speak="Our school's art club is not as big as Susie's school club.">
+              Nghe
+            </button>
+          </div>
+
+          <div class="compare-row">
+            <div class="compare-text">
+              3. Painting in our school is
+              <span class="drop-target" data-slot-id="t5_s3" data-answer="different from" role="button" tabindex="0">Thả vào đây</span>
+              the choir performance in Susie's school.
+            </div>
+            <button class="btn btn-listen" type="button" data-speak="Painting in our school is different from the choir performance in Susie's school.">
+              Nghe
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    /* =========================================================================
+       1. DỮ LIỆU BÀI TẬP BÁM SÁT ẢNH TRANG 45
+       ========================================================================= */
+    const TRAY_1 = ["prefer", "like ... better"];
+    const TRAY_2 = [
+      "I prefer painting.",
+      "I like dancing better.",
+      "I like taking photos better.",
+      "I prefer singing."
+    ];
+    const TRAY_4 = [
+      { word: "arts", related: true },
+      { word: "music", related: true },
+      { word: "painting", related: true },
+      { word: "drama", related: true },
+      { word: "dancing", related: true },
+      { word: "choir", related: true },
+      { word: "perform", related: true },
+      { word: "art clubs", related: true },
+      { word: "Australia", related: false },
+      { word: "grade 7", related: false }
+    ];
+    const TRAY_5 = ["like", "as big as", "different from"];
+
+    const QUIZ_QUESTIONS = [
+      {
+        id: "q1",
+        prompt: '1. Who is the composer of Viet Nam\'s national anthem "Tien Quan Ca"?',
+        options: [
+          { key: "A", label: "A. Pham Tuyen" },
+          { key: "B", label: "B. Van Cao" },
+          { key: "C", label: "C. An Thuyen" }
+        ],
+        correctKey: "B",
+        speakText: "Who is the composer of Viet Nam's national anthem Tien Quan Ca? B. Van Cao.",
+        explain: "Đáp án đúng là B. Van Cao — nhạc sĩ Văn Cao là tác giả Quốc ca Việt Nam (Tiến Quân Ca)."
+      },
+      {
+        id: "q2",
+        prompt: "2. Where in Viet Nam did water puppetry originate?",
+        options: [
+          { key: "A", label: "A. In the North" },
+          { key: "B", label: "B. In the central region" },
+          { key: "C", label: "C. In the South" }
+        ],
+        correctKey: "A",
+        speakText: "Where in Viet Nam did water puppetry originate? A. In the North.",
+        explain: "Đáp án đúng là A. In the North — nghệ thuật múa rối nước khởi nguồn ở vùng đồng bằng Bắc Bộ."
+      },
+      {
+        id: "q3",
+        prompt: "3. What is Bac Ninh famous for?",
+        options: [
+          { key: "A", label: "A. Quan Ho singing" },
+          { key: "B", label: "B. Vi Dam singing" },
+          { key: "C", label: "C. Cai Luong opera" }
+        ],
+        correctKey: "A",
+        speakText: "What is Bac Ninh famous for? A. Quan Ho singing.",
+        explain: "Đáp án đúng là A. Quan Ho singing — Bắc Ninh nổi tiếng với dân ca Quan họ."
+      },
+      {
+        id: "q4",
+        prompt: "4. Mozart is one of the world's greatest ______.",
+        options: [
+          { key: "A", label: "A. singers" },
+          { key: "B", label: "B. composers" },
+          { key: "C", label: "C. poets" }
+        ],
+        correctKey: "B",
+        speakText: "Mozart is one of the world's greatest composers.",
+        explain: "Đáp án đúng là B. composers — Mozart là một trong những nhà soạn nhạc vĩ đại nhất thế giới."
+      }
+    ];
+
+    /* =========================================================================
+       2. HỆ THỐNG ÂM THANH (WEB AUDIO API + SPEECH SYNTHESIS SAU TƯƠNG TÁC)
+       ========================================================================= */
+    class ClassroomAudioEngine {
+      constructor() {
+        this.ctx = null;
+        this.musicEnabled = true;
+        this.bgmTimer = null;
+        this.noteIndex = 0;
+        // Giai điệu vui tươi nhẹ nhàng xanh - vàng lớp học (C5 - E5 - G5 - A5 - G5 - E5)
+        this.melody = [523.25, 659.25, 783.99, 880.0, 783.99, 659.25];
+      }
+
+      unlock() {
+        try {
+          if (!this.ctx) {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (AudioCtx) {
+              this.ctx = new AudioCtx();
+            }
+          }
+          if (this.ctx && this.ctx.state === "suspended") {
+            this.ctx.resume().catch(() => {});
+          }
+        } catch (_) {}
+      }
+
+      playTone(freq, duration, waveType = "sine", volume = 0.08, delay = 0) {
+        if (!this.ctx) return;
+        try {
+          const now = this.ctx.currentTime + delay;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = waveType;
+          osc.frequency.setValueAtTime(freq, now);
+          gain.gain.setValueAtTime(0.0001, now);
+          gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, volume), now + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + duration + 0.025);
+        } catch (_) {}
+      }
+
+      startBackgroundMusic() {
+        this.unlock();
+        if (!this.musicEnabled || !this.ctx) return;
+        this.stopBackgroundMusic();
+        this.bgmTimer = setInterval(() => {
+          if (!this.musicEnabled || !this.ctx || this.ctx.state !== "running") return;
+          const freq = this.melody[this.noteIndex % this.melody.length];
+          this.playTone(freq, 0.22, "triangle", 0.032, 0);
+          this.noteIndex++;
+        }, 440);
+      }
+
+      stopBackgroundMusic() {
+        if (this.bgmTimer) {
+          clearInterval(this.bgmTimer);
+          this.bgmTimer = null;
+        }
+      }
+
+      setMusicEnabled(enabled) {
+        this.musicEnabled = enabled;
+        if (!enabled) {
+          this.stopBackgroundMusic();
+        } else {
+          this.startBackgroundMusic();
+        }
+      }
+
+      playCorrect() {
+        this.unlock();
+        this.playTone(523.25, 0.12, "triangle", 0.11, 0);
+        this.playTone(659.25, 0.12, "triangle", 0.11, 0.1);
+        this.playTone(783.99, 0.22, "triangle", 0.13, 0.2);
+      }
+
+      playEncouragementWrong() {
+        this.unlock();
+        // Âm cổ động nhẹ nhàng, không gay gắt
+        this.playTone(392.0, 0.14, "sine", 0.09, 0);
+        this.playTone(349.23, 0.16, "sine", 0.09, 0.13);
+        this.playTone(440.0, 0.18, "triangle", 0.08, 0.27);
+      }
+
+      playVictoryFanfare() {
+        this.unlock();
+        const fanfare = [523.25, 659.25, 783.99, 1046.5];
+        fanfare.forEach((f, idx) => {
+          this.playTone(f, 0.2, "triangle", 0.13, idx * 0.12);
+        });
+      }
+
+      speakEnglish(text) {
+        this.unlock();
+        this.playTone(659.25, 0.07, "sine", 0.06, 0);
+        if ("speechSynthesis" in window) {
+          try {
+            window.speechSynthesis.cancel();
+            const utt = new SpeechSynthesisUtterance(text);
+            utt.lang = "en-GB";
+            utt.rate = 0.92;
+            window.speechSynthesis.speak(utt);
+          } catch (_) {}
+        }
+      }
+    }
+
+    const audioEngine = new ClassroomAudioEngine();
+
+    /* =========================================================================
+       3. HIỆU ỨNG PHÁO HOA TRÊN CANVAS
+       ========================================================================= */
+    class FireworksDisplay {
+      constructor(canvas) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext("2d");
+        this.particles = [];
+        this.running = false;
+        this.resize();
+        window.addEventListener("resize", () => this.resize());
+      }
+
+      resize() {
+        if (!this.canvas) return;
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+      }
+
+      launchBurst(centerX, centerY, count = 34) {
+        const colors = ["#16a34a", "#eab308", "#22c55e", "#facc15", "#0284c7", "#84cc16"];
+        for (let i = 0; i < count; i++) {
+          const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.25;
+          const speed = 2.5 + Math.random() * 5.2;
+          this.particles.push({
+            x: centerX,
+            y: centerY,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed - 1.2,
+            radius: 5 + Math.random() * 5,
+            color: colors[i % colors.length],
+            alpha: 1,
+            decay: 0.016 + Math.random() * 0.012
+          });
+        }
+        if (!this.running) {
+          this.running = true;
+          this.loop();
+        }
+      }
+
+      launchCelebration(waves = 3) {
+        for (let w = 0; w < waves; w++) {
+          setTimeout(() => {
+            const x = this.canvas.width * (0.22 + Math.random() * 0.56);
+            const y = this.canvas.height * (0.2 + Math.random() * 0.35);
+            this.launchBurst(x, y, 42);
+          }, w * 260);
+        }
+      }
+
+      loop() {
+        if (!this.ctx) return;
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        for (let i = this.particles.length - 1; i >= 0; i--) {
+          const p = this.particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.11;
+          p.alpha -= p.decay;
+          if (p.alpha <= 0) {
+            this.particles.splice(i, 1);
+            continue;
+          }
+          this.ctx.save();
+          this.ctx.globalAlpha = Math.max(0, p.alpha);
+          this.ctx.fillStyle = p.color;
+          this.ctx.beginPath();
+          this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          this.ctx.fill();
+          this.ctx.restore();
+        }
+        if (this.particles.length > 0) {
+          requestAnimationFrame(() => this.loop());
+        } else {
+          this.running = false;
+        }
+      }
+    }
+
+    const fireworks = new FireworksDisplay(document.getElementById("fireworksCanvas"));
+
+    /* =========================================================================
+       4. TRẠNG THÁI GAME & TƯƠNG TÁC KÉO THẢ / CHẠM CHỌN
+       ========================================================================= */
+    const gameState = {
+      score: 0,
+      activeTab: "tab1",
+      pickedChip: null, // { value, sourceType: "task1"|"task2"|"task4"|"task5" }
+      filledSlots: {}, // { [slotId]: value }
+      quizChoices: {}, // { [qId]: chosenKey }
+      collectedTask4: [], // mảng từ đúng đã thu thập ở Task 4
+      celebratedAll: false,
+      pointerDrag: {
+        active: false,
+        value: null,
+        sourceType: null,
+        sourceEl: null,
+        hoverTarget: null,
+        startX: 0,
+        startY: 0,
+        moved: false
+      },
+      html5Drag: null
+    };
+
+    const TOTAL_ITEMS = 2 + 2 + 4 + 8 + 3; // 19 mục cho điểm tối đa 190
+
+    const dom = {
+      ghost: document.getElementById("dragGhost"),
+      scoreDisplay: document.getElementById("scoreDisplay"),
+      statusBanner: document.getElementById("statusBanner"),
+      btnStart: document.getElementById("btnStart"),
+      btnMusic: document.getElementById("btnMusic"),
+      btnReset: document.getElementById("btnReset"),
+      tabButtons: document.querySelectorAll(".tab-btn"),
+      panels: {
+        tab1: document.getElementById("tab1"),
+        tab2: document.getElementById("tab2"),
+        tab3: document.getElementById("tab3")
+      },
+      trayTask1: document.getElementById("trayTask1"),
+      trayTask2: document.getElementById("trayTask2"),
+      trayTask4: document.getElementById("trayTask4"),
+      collectedTrayTask4: document.getElementById("collectedTrayTask4"),
+      trayTask5: document.getElementById("trayTask5"),
+      quizContainer: document.getElementById("quizContainer")
+    };
+
+    function setBanner(text, mode = "") {
+      dom.statusBanner.textContent = text;
+      dom.statusBanner.className = "status-banner" + (mode ? " " + mode : "");
+    }
+
+    function addScore(points) {
+      gameState.score += points;
+      dom.scoreDisplay.textContent = `Điểm: ${gameState.score}`;
+      checkAllCompleted();
+    }
+
+    function countCompleted() {
+      const slotDone = Object.keys(gameState.filledSlots).length;
+      const quizDone = Object.keys(gameState.quizChoices).filter((qId) => {
+        const q = QUIZ_QUESTIONS.find((item) => item.id === qId);
+        return q && gameState.quizChoices[qId] === q.correctKey;
+      }).length;
+      const t4Done = gameState.collectedTask4.length;
+      return slotDone + quizDone + t4Done;
+    }
+
+    function checkAllCompleted() {
+      if (!gameState.celebratedAll && countCompleted() >= TOTAL_ITEMS) {
+        gameState.celebratedAll = true;
+        audioEngine.playVictoryFanfare();
+        fireworks.launchCelebration(4);
+        setBanner(`Tuyệt vời! Bạn đã hoàn thành toàn bộ hoạt động Unit 4 với ${gameState.score} điểm!`, "success");
+      }
+    }
+
+    function clearDragHighlights() {
+      document.querySelectorAll(".drop-target.hover-over, .collected-tray.hover-over").forEach((el) => {
+        el.classList.remove("hover-over");
+      });
+      gameState.pointerDrag.hoverTarget = null;
+    }
+
+    function handleSlotDrop(slotEl, value, xPos, yPos) {
+      if (!slotEl || !value) return;
+      const slotId = slotEl.dataset.slotId;
+      if (gameState.filledSlots[slotId]) {
+        setBanner("Chỗ trống này đã được điền đáp án đúng rồi!");
+        return;
+      }
+      const expected = slotEl.dataset.answer;
+      if (value === expected) {
+        audioEngine.playCorrect();
+        gameState.filledSlots[slotId] = value;
+        gameState.pickedChip = null;
+        slotEl.textContent = value;
+        slotEl.classList.remove("shake-err");
+        slotEl.classList.add("filled-ok");
+        const rect = slotEl.getBoundingClientRect();
+        fireworks.launchBurst(xPos || rect.left + rect.width / 2, yPos || rect.top + rect.height / 2, 28);
+        addScore(10);
+        renderAllTrays();
+        setBanner(`Chính xác! "${value}" đã được đặt đúng vị trí (+10 điểm).`, "success");
+      } else {
+        audioEngine.playEncouragementWrong();
+        slotEl.classList.remove("shake-err");
+        void slotEl.offsetWidth;
+        slotEl.classList.add("shake-err");
+        setBanner(`Chưa đúng! Thử kéo hoặc chạm chọn mẫu khác cho chỗ trống này nhé!`, "error");
+      }
+    }
+
+    function handleTask4Collect(word, xPos, yPos) {
+      const entry = TRAY_4.find((item) => item.word === word);
+      if (!entry) return;
+      if (!entry.related) {
+        audioEngine.playEncouragementWrong();
+        setBanner(`"${word}" không phải từ/cụm từ thuộc chủ đề nghệ thuật và âm nhạc trong bài của Susie. Cố lên nhé!`, "error");
+        return;
+      }
+      if (gameState.collectedTask4.includes(word)) {
+        setBanner(`Bạn đã chọn "${word}" rồi!`);
+        return;
+      }
+      audioEngine.playCorrect();
+      gameState.collectedTask4.push(word);
+      gameState.pickedChip = null;
+      const rect = dom.collectedTrayTask4.getBoundingClientRect();
+      fireworks.launchBurst(xPos || rect.left + rect.width / 2, yPos || rect.top + rect.height / 2, 24);
+      addScore(10);
+      renderTask4Tray();
+      setBanner(`Rất tốt! "${word}" liên quan đến chủ đề arts & music (+10 điểm).`, "success");
+    }
+
+    // Sự kiện Pointer toàn cục hỗ trợ kéo thả bằng ngón tay, bảng tương tác và chuột
+    document.addEventListener("pointermove", (e) => {
+      if (!gameState.pointerDrag.active) return;
+      const dx = e.clientX - gameState.pointerDrag.startX;
+      const dy = e.clientY - gameState.pointerDrag.startY;
+      if (Math.hypot(dx, dy) > 8) {
+        gameState.pointerDrag.moved = true;
+        dom.ghost.style.display = "block";
+        dom.ghost.style.left = `${e.clientX}px`;
+        dom.ghost.style.top = `${e.clientY}px`;
+      }
+
+      if (gameState.pointerDrag.moved) {
+        const under = document.elementFromPoint(e.clientX, e.clientY);
+        const candidate = under
+          ? under.closest(".drop-target:not(.filled-ok), .collected-tray")
+          : null;
+        if (gameState.pointerDrag.hoverTarget !== candidate) {
+          clearDragHighlights();
+          if (candidate) {
+            candidate.classList.add("hover-over");
+            gameState.pointerDrag.hoverTarget = candidate;
+          }
+        }
+      }
+    });
+
+    document.addEventListener("pointerup", (e) => {
+      if (!gameState.pointerDrag.active) return;
+      const { value, sourceType, sourceEl, moved, hoverTarget } = gameState.pointerDrag;
+      dom.ghost.style.display = "none";
+      if (sourceEl) sourceEl.classList.remove("dragging-hidden");
+
+      let targetEl = hoverTarget;
+      if (!targetEl && moved) {
+        const under = document.elementFromPoint(e.clientX, e.clientY);
+        targetEl = under ? under.closest(".drop-target:not(.filled-ok), .collected-tray") : null;
+      }
+
+      clearDragHighlights();
+      gameState.pointerDrag.active = false;
+      gameState.pointerDrag.value = null;
+      gameState.pointerDrag.sourceType = null;
+      gameState.pointerDrag.sourceEl = null;
+      gameState.pointerDrag.startX = 0;
+      gameState.pointerDrag.startY = 0;
+
+      if (moved && targetEl) {
+        if (targetEl.classList.contains("collected-tray") && sourceType === "task4") {
+          handleTask4Collect(value, e.clientX, e.clientY);
+        } else if (targetEl.classList.contains("drop-target")) {
+          handleSlotDrop(targetEl, value, e.clientX, e.clientY);
+        }
+        gameState.pointerDrag.moved = false;
+        return;
+      }
+
+      // Chạm chọn thẻ (không kéo) để chạm vào ô trống/khay đích
+      if (!moved) {
+        audioEngine.unlock();
+        audioEngine.playTone(659.25, 0.08, "sine", 0.07, 0);
+        const samePicked =
+          gameState.pickedChip &&
+          gameState.pickedChip.value === value &&
+          gameState.pickedChip.sourceType === sourceType;
+        gameState.pickedChip = samePicked ? null : { value, sourceType };
+        renderAllTrays();
+        if (gameState.pickedChip) {
+          setBanner(`Đã chọn thẻ "${value}" — hãy chạm vào ô trống hoặc khay mục tiêu!`);
+        }
+      }
+      gameState.pointerDrag.moved = false;
+    });
+
+    function buildChipButton(labelText, sourceType) {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      const isPicked =
+        gameState.pickedChip &&
+        gameState.pickedChip.value === labelText &&
+        gameState.pickedChip.sourceType === sourceType;
+      chip.className = "draggable-chip" + (isPicked ? " selected" : "");
+      chip.textContent = labelText;
+      chip.draggable = true;
+
+      chip.addEventListener("dragstart", (e) => {
+        gameState.html5Drag = { value: labelText, sourceType };
+        gameState.pickedChip = { value: labelText, sourceType };
+        chip.classList.add("dragging-hidden");
+        if (e.dataTransfer) {
+          e.dataTransfer.setData("text/plain", labelText);
+          e.dataTransfer.effectAllowed = "copyMove";
+        }
+      });
+
+      chip.addEventListener("dragend", () => {
+        chip.classList.remove("dragging-hidden");
+        gameState.html5Drag = null;
+        clearDragHighlights();
+      });
+
+      chip.addEventListener("pointerdown", (e) => {
+        if (e.button !== undefined && e.button !== 0 && e.pointerType === "mouse") return;
+        audioEngine.unlock();
+        dom.ghost.textContent = labelText;
+        gameState.pointerDrag.active = true;
+        gameState.pointerDrag.value = labelText;
+        gameState.pointerDrag.sourceType = sourceType;
+        gameState.pointerDrag.sourceEl = chip;
+        gameState.pointerDrag.startX = e.clientX;
+        gameState.pointerDrag.startY = e.clientY;
+        gameState.pointerDrag.moved = false;
+      });
+
+      return chip;
+    }
+
+    function renderSimpleTray(trayEl, words, sourceType) {
+      trayEl.innerHTML = "";
+      words.forEach((w) => {
+        trayEl.appendChild(buildChipButton(w, sourceType));
+      });
+    }
+
+    function renderTask4Tray() {
+      dom.trayTask4.innerHTML = "";
+      TRAY_4.forEach((item) => {
+        if (gameState.collectedTask4.includes(item.word)) return;
+        dom.trayTask4.appendChild(buildChipButton(item.word, "task4"));
+      });
+
+      if (gameState.collectedTask4.length === 0) {
+        dom.collectedTrayTask4.innerHTML = `<span class="guide-text">Thả hoặc chạm chọn từ/cụm từ liên quan đến arts &amp; music vào đây...</span>`;
+      } else {
+        dom.collectedTrayTask4.innerHTML = gameState.collectedTask4
+          .map((w) => `<span class="found-tag">${w}</span>`)
+          .join("");
+      }
+    }
+
+    function renderAllTrays() {
+      renderSimpleTray(dom.trayTask1, TRAY_1, "task1");
+      renderSimpleTray(dom.trayTask2, TRAY_2, "task2");
+      renderTask4Tray();
+      renderSimpleTray(dom.trayTask5, TRAY_5, "task5");
+    }
+
+    function bindDropTargets() {
+      document.querySelectorAll(".drop-target").forEach((slot) => {
+        const slotId = slot.dataset.slotId;
+        if (gameState.filledSlots[slotId]) {
+          slot.textContent = gameState.filledSlots[slotId];
+          slot.classList.add("filled-ok");
+        } else {
+          slot.textContent = slotId.startsWith("t2_") ? "Thả câu trả lời vào đây" : "Thả vào đây";
+          slot.classList.remove("filled-ok", "shake-err");
+        }
+
+        slot.addEventListener("dragover", (e) => {
+          if (gameState.filledSlots[slotId]) return;
+          e.preventDefault();
+          slot.classList.add("hover-over");
+        });
+
+        slot.addEventListener("dragleave", () => {
+          slot.classList.remove("hover-over");
+        });
+
+        slot.addEventListener("drop", (e) => {
+          if (gameState.filledSlots[slotId]) return;
+          e.preventDefault();
+          slot.classList.remove("hover-over");
+          const val =
+            (gameState.html5Drag && gameState.html5Drag.value) ||
+            (e.dataTransfer && e.dataTransfer.getData("text/plain")) ||
+            (gameState.pickedChip && gameState.pickedChip.value);
+          gameState.html5Drag = null;
+          handleSlotDrop(slot, val);
+        });
+
+        slot.addEventListener("click", () => {
+          if (gameState.filledSlots[slotId]) return;
+          if (gameState.pickedChip) {
+            handleSlotDrop(slot, gameState.pickedChip.value);
+          } else {
+            setBanner("Hãy kéo thả thẻ từ khay phía trên (hoặc chạm chọn thẻ trước) vào chỗ trống!");
+          }
+        });
+      });
+
+      dom.collectedTrayTask4.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dom.collectedTrayTask4.classList.add("hover-over");
+      });
+
+      dom.collectedTrayTask4.addEventListener("dragleave", () => {
+        dom.collectedTrayTask4.classList.remove("hover-over");
+      });
+
+      dom.collectedTrayTask4.addEventListener("drop", (e) => {
+        e.preventDefault();
+        dom.collectedTrayTask4.classList.remove("hover-over");
+        const val =
+          (gameState.html5Drag && gameState.html5Drag.sourceType === "task4" && gameState.html5Drag.value) ||
+          (e.dataTransfer && e.dataTransfer.getData("text/plain")) ||
+          (gameState.pickedChip && gameState.pickedChip.sourceType === "task4" && gameState.pickedChip.value);
+        gameState.html5Drag = null;
+        if (val) handleTask4Collect(val);
+      });
+
+      dom.collectedTrayTask4.addEventListener("click", () => {
+        if (gameState.pickedChip && gameState.pickedChip.sourceType === "task4") {
+          handleTask4Collect(gameState.pickedChip.value);
+        } else {
+          setBanner("Hãy kéo thả hoặc chạm chọn từ/cụm từ liên quan đến nghệ thuật & âm nhạc trong đoạn văn của Susie!");
+        }
+      });
+    }
+
+    function bindListenButtons() {
+      document.querySelectorAll("[data-speak]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const phrase = btn.getAttribute("data-speak");
+          audioEngine.speakEnglish(phrase);
+          setBanner(`Đang phát âm: "${phrase}"`);
+        });
+      });
+    }
+
+    /* =========================================================================
+       5. RENDER QUIZ TRẮC NGHIỆM (TASK 3 - 4 CÂU)
+       ========================================================================= */
+    function renderQuiz() {
+      dom.quizContainer.innerHTML = "";
+      QUIZ_QUESTIONS.forEach((q) => {
+        const pickedKey = gameState.quizChoices[q.id];
+        const isRight = pickedKey === q.correctKey;
+
+        const card = document.createElement("div");
+        card.className = "quiz-card";
+
+        const top = document.createElement("div");
+        top.className = "quiz-top";
+
+        const qTitle = document.createElement("div");
+        qTitle.className = "quiz-question";
+        qTitle.textContent = q.prompt;
+
+        const listenBtn = document.createElement("button");
+        listenBtn.type = "button";
+        listenBtn.className = "btn btn-listen";
+        listenBtn.textContent = "Nghe";
+        listenBtn.addEventListener("click", () => {
+          audioEngine.speakEnglish(q.speakText);
+          setBanner(`Đang phát âm câu hỏi: "${q.speakText}"`);
+        });
+
+        top.appendChild(qTitle);
+        top.appendChild(listenBtn);
+        card.appendChild(top);
+
+        const optsWrap = document.createElement("div");
+        optsWrap.className = "quiz-options";
+
+        q.options.forEach((opt) => {
+          const optBtn = document.createElement("button");
+          optBtn.type = "button";
+          optBtn.className = "quiz-opt-btn";
+          if (pickedKey === opt.key) {
+            optBtn.classList.add(opt.key === q.correctKey ? "correct-pick" : "wrong-pick");
+          }
+          optBtn.textContent = opt.label;
+          optBtn.addEventListener("click", (e) => {
+            if (gameState.quizChoices[q.id] === q.correctKey) {
+              setBanner(`Câu này bạn đã trả lời đúng rồi!`);
+              return;
+            }
+            gameState.quizChoices[q.id] = opt.key;
+            if (opt.key === q.correctKey) {
+              audioEngine.playCorrect();
+              const r = optBtn.getBoundingClientRect();
+              fireworks.launchBurst(e.clientX || r.left + r.width / 2, e.clientY || r.top + r.height / 2, 32);
+              addScore(10);
+              renderQuiz();
+              setBanner(`Chính xác! ${q.explain} (+10 điểm)`, "success");
+            } else {
+              audioEngine.playEncouragementWrong();
+              renderQuiz();
+              setBanner(`Chưa đúng! Hãy thử chọn lại phương án khác cho câu hỏi này nhé!`, "error");
+            }
+          });
+          optsWrap.appendChild(optBtn);
+        });
+
+        card.appendChild(optsWrap);
+
+        if (isRight) {
+          const exp = document.createElement("div");
+          exp.className = "explain-box";
+          exp.textContent = q.explain;
+          card.appendChild(exp);
+        }
+
+        dom.quizContainer.appendChild(card);
+      });
+    }
+
+    /* =========================================================================
+       6. CHUYỂN TAB & ĐIỀU KHIỂN CHÍNH
+       ========================================================================= */
+    function switchTab(tabId) {
+      gameState.activeTab = tabId;
+      gameState.pickedChip = null;
+      dom.tabButtons.forEach((btn) => {
+        const active = btn.dataset.tab === tabId;
+        btn.classList.toggle("active", active);
+        btn.setAttribute("aria-selected", String(active));
+      });
+      Object.keys(dom.panels).forEach((key) => {
+        dom.panels[key].classList.toggle("active", key === tabId);
+      });
+      renderAllTrays();
+    }
+
+    dom.tabButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        audioEngine.unlock();
+        audioEngine.playTone(587.33, 0.08, "sine", 0.07, 0);
+        switchTab(btn.dataset.tab);
+      });
+    });
+
+    dom.btnStart.addEventListener("click", (e) => {
+      audioEngine.startBackgroundMusic();
+      audioEngine.playCorrect();
+      fireworks.launchBurst(e.clientX || window.innerWidth / 2, e.clientY || 120, 30);
+      setBanner("Đã bắt đầu! Kéo thả hoặc chạm chọn các thẻ đáp án để hoàn thành bài tập nhé.", "success");
+    });
+
+    dom.btnMusic.addEventListener("click", () => {
+      audioEngine.unlock();
+      const nextState = !audioEngine.musicEnabled;
+      audioEngine.setMusicEnabled(nextState);
+      dom.btnMusic.textContent = nextState ? "Nhạc nền: Bật" : "Nhạc nền: Tắt";
+      dom.btnMusic.classList.toggle("active", nextState);
+      dom.btnMusic.setAttribute("aria-pressed", String(nextState));
+      setBanner(nextState ? "Đã bật nhạc nền vui tươi nhẹ nhàng." : "Đã tắt nhạc nền.");
+    });
+
+    dom.btnReset.addEventListener("click", () => {
+      audioEngine.unlock();
+      audioEngine.playTone(440, 0.12, "sine", 0.08, 0);
+      gameState.score = 0;
+      gameState.pickedChip = null;
+      gameState.filledSlots = {};
+      gameState.quizChoices = {};
+      gameState.collectedTask4 = [];
+      gameState.celebratedAll = false;
+      dom.scoreDisplay.textContent = "Điểm: 0";
+      renderAllTrays();
+      bindDropTargets();
+      renderQuiz();
+      setBanner('Đã đặt lại toàn bộ bài tập. Bấm "Bắt đầu" để chơi lại!');
+    });
+
+    // Khởi tạo ban đầu (không tự phát âm thanh trước khi người dùng tương tác)
+    renderAllTrays();
+    bindDropTargets();
+    bindListenButtons();
+    renderQuiz();
+  </script>
+</body>
+</html>
